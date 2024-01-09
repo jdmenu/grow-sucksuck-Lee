@@ -45,6 +45,10 @@
         #stats {
             margin-top: 20px;
         }
+
+        #ranking {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -52,12 +56,17 @@
     <div id="game-container">
         <h1>이석준 강화 게임</h1>
 
-        <button onclick="enhanceCharacter()">강화하기</button>
+        <button onclick="enhanceCharacter()" id="enhanceButton">강화하기</button>
 
         <div id="stats">
             <p>현재 레벨: <span id="level">0</span></p>
             <p>현재 키: <span id="height">170</span> cm</p>
             <p>강화 성공 확률: <span id="successRate">100</span>%</p>
+        </div>
+
+        <div id="ranking">
+            <h2>랭킹</h2>
+            <ol id="rankingList"></ol>
         </div>
     </div>
 
@@ -65,33 +74,23 @@
         var level = 0;
         var height = 170;
         var successRate = 100;
+        var isButtonDisabled = false;
+
+        // 랭킹 정보를 가져오기
+        var rankingData = JSON.parse(localStorage.getItem('ranking')) || [];
+
+        // 랭킹 정보 업데이트 함수
+        function updateRanking() {
+            var rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
+
+            // 랭킹 정보를 기록
+            rankingData.forEach(function (data) {
+                var listItem = document.createElement('li');
+                listItem.textContent = `레벨 ${data.level}, 키 ${data.height.toFixed(1)} cm`;
+                rankingList.appendChild(listItem);
+            });
+        }
 
         function enhanceCharacter() {
-            if (Math.random() * 100 < successRate) {
-                // 강화 성공
-                level++;
-                height += level * 1.5;  // 레벨에 따라 증가폭이 점점 커짐
-                successRate -= 1.5;  // 레벨에 상관없이 강화 성공 확률 감소
-
-                // 레벨과 키 갱신
-                document.getElementById("level").innerText = level;
-                document.getElementById("height").innerText = height.toFixed(1);  // 소수점 첫째 자리까지 표시
-                document.getElementById("successRate").innerText = successRate.toFixed(1);
-            } else {
-                // 강화 실패
-                level = 0;
-                height = 170;
-                successRate = 100;
-
-                // 레벨과 키 갱신
-                document.getElementById("level").innerText = level;
-                document.getElementById("height").innerText = height.toFixed(1);
-                document.getElementById("successRate").innerText = successRate.toFixed(1);
-
-                alert("강화에 실패하여 레벨이 초기화되었습니다!");
-            }
-        }
-    </script>
-
-</body>
-</html>
+            if (isButtonDisabled
