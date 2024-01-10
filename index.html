@@ -45,6 +45,10 @@
         #stats {
             margin-top: 20px;
         }
+
+        #item-info {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -58,6 +62,11 @@
             <p>현재 레벨: <span id="level">0</span></p>
             <p>현재 키: <span id="height">170</span> cm</p>
             <p>강화 성공 확률: <span id="successRate">100</span>%</p>
+            <p id="bestRecord">최고 기록: 레벨 0, 키 170.0 cm</p>
+        </div>
+
+        <div id="item-info">
+            <p>아이템 사용 가능 횟수: <span id="itemCount">3</span></p>
         </div>
     </div>
 
@@ -66,45 +75,103 @@
         var height = 170;
         var successRate = 100;
         var isButtonDisabled = false;
+        var itemCount = 3;
 
         function enhanceCharacter() {
             if (isButtonDisabled) {
                 return;
             }
 
-         
             isButtonDisabled = true;
             document.getElementById("enhanceButton").disabled = true;
 
             setTimeout(function() {
                 if (Math.random() * 100 < successRate) {
-                    
                     level++;
                     height += level * 1.5;
                     successRate -= 1.5;  
 
-                    
                     document.getElementById("level").innerText = level;
                     document.getElementById("height").innerText = height.toFixed(1);  
                     document.getElementById("successRate").innerText = successRate.toFixed(1);
+
+                    // 최고 기록 업데이트
+                    updateBestRecord();
                 } else {
-                   
-                    level = 0;
-                    height = 170;
-                    successRate = 100;
-
-                   
-                    document.getElementById("level").innerText = level;
-                    document.getElementById("height").innerText = height.toFixed(1);
-                    document.getElementById("successRate").innerText = successRate.toFixed(1);
-
-                    alert("강화에 실패하여 레벨이 초기화되었습니다!");
+                    // 강화 실패 시 아이템 사용 여부 물어보기
+                    askToUseItem();
                 }
 
-                
                 isButtonDisabled = false;
                 document.getElementById("enhanceButton").disabled = false;
             }, 250);
+        }
+
+        function askToUseItem() {
+        if (itemCount > 0) {
+            var useItem = confirm("강화에 실패했습니다. 아이템을 사용하시겠습니까?");
+            if (useItem) {
+                // 아이템 사용 함수 호출
+                useItemFunction();
+            } else {
+                // 게임 오버 시 모든 정보 초기화
+                gameOver();
+            }
+        } else {
+            alert("게임 오버 !")
+            // 아이템 갯수가 0이면 바로 초기화
+            gameOver();
+        }
+    }
+
+        // 아이템 사용 함수
+        function useItemFunction() {
+            if (itemCount > 0) {
+                // 아이템 사용 횟수 감소 및 화면 업데이트
+                itemCount--;
+                document.getElementById("itemCount").innerText = itemCount;
+
+                // 최고 기록 업데이트
+                updateBestRecord();
+            } else {
+                // 게임 오버 시 모든 정보 초기화
+                gameOver();
+            }
+        }
+
+        function gameOver() {
+            // 게임 오버 시 모든 정보 초기화
+            level = 0;
+            height = 170;
+            successRate = 100;
+            itemCount = 3;
+
+            // 화면 업데이트
+            document.getElementById("level").innerText = level;
+            document.getElementById("height").innerText = height.toFixed(1);
+            document.getElementById("successRate").innerText = successRate.toFixed(1);
+            document.getElementById("itemCount").innerText = itemCount;
+
+            // 최고 기록 업데이트
+            updateBestRecord();
+        }
+
+        function updateBestRecord() {
+            // 최고 기록 업데이트
+            var bestLevel = parseInt(localStorage.getItem("bestLevel")) || 0;
+            var bestHeight = parseFloat(localStorage.getItem("bestHeight")) || 170;
+
+            if (level > bestLevel) {
+                bestLevel = level;
+                localStorage.setItem("bestLevel", bestLevel);
+            }
+
+            if (height > bestHeight) {
+                bestHeight = height;
+                localStorage.setItem("bestHeight", bestHeight);
+            }
+
+            document.getElementById("bestRecord").innerText = `최고 기록: 레벨 ${bestLevel}, 키 ${bestHeight.toFixed(1)} cm`;
         }
     </script>
 
