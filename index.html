@@ -188,7 +188,7 @@
                 if (Math.random() * 100 < successRate) {
                     level++;
 
-                    var bigHitProbability = 1 / 8 * (100 - successRate);
+                    var bigHitProbability =  1 / 8 * (107.5 - successRate);
                     if (Math.random() * 100 < bigHitProbability) {
                         level += 2;
                         document.getElementById("bigHitProbability").innerText = bigHitProbability.toFixed(3);
@@ -197,13 +197,23 @@
                     }
 
 
-                    height += level * 1.5;
-                    successRate -= 1.7 * (1 + (level - 1) / 10);   
+                    height += level * 1.57;
+                    successRate -= 1.627 * (0.7 + (level - 1) / 10);   
+                    
+                    if (level === 10) {
+                        itemCount += 2;
+                    }
                     if (level === 15) {
                         itemCount += 3;
                     }
                     if (level === 20) {
+                        itemCount += 3;
+                    }
+                    if (level === 25) {
                         itemCount += 4;
+                    }
+                    if (level === 30) {
+                        itemCount += 10;
                     }
                     document.getElementById("bigHitProbability").innerText = bigHitProbability.toFixed(3);
                     document.getElementById("level").innerText = level;
@@ -249,12 +259,13 @@
             height = 170;
             successRate = 100;
             itemCount = 3;
+            bigHitProbability = 0.000;
 
             document.getElementById("level").innerText = level;
             document.getElementById("height").innerText = height.toFixed(1);
             document.getElementById("successRate").innerText = successRate.toFixed(1);
             document.getElementById("itemCount").innerText = itemCount;
-
+            document.getElementById("bigHitProbability").innerText = "0.000";
             updateBestRecord();
         }
 
