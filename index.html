@@ -162,14 +162,24 @@
     <div id="menu-container">
         <div id="menu">
             <a href="#">업적 시스템</a>
-            <a href="#">패치 노트</a>
+            <a href="#" onclick="goToPatchNote()">패치 노트</a>
             <!-- Add more menu items as needed -->
         </div>
     </div>
 
+
+
+
+
+
     <div id="overlay" onclick="closeMenu()"></div>
 
     <script>
+
+function goToPatchNote() {
+            window.location.href = "https://saufikr.github.io/grow-sucksuck-Lee/note";
+        }
+
         var level = 0;
         var height = 170;
         var successRate = 100;
